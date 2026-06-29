@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs - OWL Community</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: linear-gradient(180deg, #080704 0%, #0f0d09 100%); color: #ece4c8; }
+    #mainNav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(8, 7, 5, 0.92);
+      border-bottom: 1px solid rgba(255, 215, 125, 0.12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      letter-spacing: 6px;
+      color: #f7efd1;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-links {
+      display: flex;
+      gap: 34px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(236, 228, 199, 0.85);
+      text-decoration: none;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+    .nav-links a:hover {
+      color: #f7ecd2;
+      transform: translateY(-1px);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-cta-login,
+    .nav-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #d7c295;
+      border: 1px solid rgba(215, 178, 97, 0.26);
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: rgba(215, 178, 97, 0.08);
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .nav-cta-login:hover,
+    .nav-cta:hover {
+      background: rgba(215, 178, 97, 0.2);
+      color: #f8e7b8;
+    }
+    .auth-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid rgba(215, 178, 97, 0.2);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      color: #f7efd1;
+    }
+    .user-badge {
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #f3cf7f;
+    }
+    .logout-btn {
+      background: rgba(215, 178, 97, 0.12);
+      color: #f3e6b3;
+      border: 1px solid rgba(215, 178, 97, 0.22);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .logout-btn:hover {
+      background: rgba(215, 178, 97, 0.25);
+    }
+    .blogs-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 140px 36px 60px;
+    }
+    .blogs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 55px;
+    }
+    .blogs-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 60px;
+      letter-spacing: 4px;
+      color: #f7ecd2;
+      margin: 0;
+    }
+    .header-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .publish-note {
+      color: #c7b58d;
+      font-size: 12px;
+      margin: 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .new-blog-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: var(--ember);
+      color: var(--stone);
+      padding: 14px 32px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .new-blog-btn:hover {
+      background: var(--gold);
+    }
+    .blogs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 32px;
+    }
+    .blog-card {
+      background: rgba(21, 18, 14, 0.92);
+      border: 1px solid rgba(255, 215, 125, 0.18);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.22);
+      padding: 30px;
+      transition: transform 0.3s, border-color 0.3s, background 0.3s;
+      cursor: pointer;
+    }
+    .blog-card:hover {
+      border-color: rgba(255, 215, 125, 0.45);
+      background: rgba(31, 27, 21, 0.98);
+      transform: translateY(-5px);
+    }
+    .blog-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #ffffff;
+      margin-bottom: 14px;
+      line-height: 1.18;
+    }
+    .blog-card .meta {
+      font-size: 12px;
+      color: #f5e8c2;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .blog-card p {
+      font-size: 15px;
+      color: #f7efd5;
+      line-height: 1.75;
+      margin-bottom: 16px;
+      font-weight: 300;
+    }
+    .blog-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .blog-card .tag {
+      background: rgba(255, 215, 125, 0.18);
+      color: #fdf6dc;
+      padding: 6px 12px;
+      font-size: 11px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+    }
+    .blog-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .blog-modal.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--stone);
+      border: 1px solid rgba(196, 98, 26, 0.3);
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--ember);
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px;
+      letter-spacing: 3px;
+      color: var(--snow);
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(215, 182, 98, 0.2);
+      color: #f7efd3;
+      padding: 12px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--ember);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .submit-btn {
+      width: 100%;
+      background: var(--ember);
+      border: none;
+      color: var(--stone);
+      padding: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 16px;
+    }
+    .submit-btn:hover {
+      background: var(--gold);
+    }
+    .user-menu {
+      position: relative;
+    }
+    .user-btn {
+      background: none;
+      border: none;
+      color: var(--fog);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: color 0.3s;
+    }
+    .user-btn:hover {
+      color: var(--ember);
+    }
+    .logout-btn {
+      background: rgba(215, 182, 98, 0.12);
+      color: #f3e6b3;
+      padding: 8px 16px;
+      border: 1px solid rgba(215, 182, 98, 0.22);
+      font-size: 12px;
+      cursor: pointer;
+      margin-left: 16px;
+      border-radius: 999px;
+    }
+    .logout-btn:hover {
+      background: rgba(215, 182, 98, 0.24);
+    }
+  </style>
+</head>
+<body>
+  <nav id="mainNav">
+    <a href="/" class="nav-logo">OWL</a>
+    <div class="nav-actions">
+      <a href="/login" class="nav-cta-login" id="loginLink">Login</a>
+      <a href="/" class="nav-cta">Join Inner Circle</a>
+    </div>
+  </nav>
+
+  <div class="blogs-container">
+    <div class="blogs-header">
+      <h1>Expedition Blogs</h1>
+      <div class="header-actions">
+        <div class="auth-pill" id="authStatus">
+          <span class="user-badge" id="userBadge">Guest</span>
+          <button class="logout-btn" id="logoutBtn" style="display:none;">Logout</button>
+        </div>
+        <button class="new-blog-btn" id="newBlogBtn">+ New Blog</button>
+        <p class="publish-note" id="publishNote">Login to publish a new expedition.</p>
+      </div>
+    </div>
+
+    <div class="blog-callout" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(212,174,93,0.18); padding: 24px; margin-bottom: 32px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--snow);margin:0;">Poisonous Plants Guide</h2>
+        <p style="color:var(--fog);font-size:14px;max-width:620px;margin:10px 0 0;line-height:1.6;">A quick field document for venomous flora, safe handling, and what to watch for on the trail.</p>
+      </div>
+      <a href="/plants" class="nav-cta" style="margin:0;">View Guide</a>
+    </div>
+
+    <div class="blogs-grid" id="blogsGrid">
+      <!-- Blogs will be loaded here -->
+    </div>
+  </div>
+
+  <!-- New Blog Modal -->
+  <div class="blog-modal" id="blogModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeBlogModal()">&times;</button>
+      <h2 class="modal-title">Write Your Journey</h2>
+      <div id="blogStatus" style="display:none;padding:14px;border-radius:4px;margin-bottom:18px;font-size:13px;"></div>
+      <form id="blogForm">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="blogTitle" placeholder="Your expedition title" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" id="blogDesc" placeholder="Short description" required>
+        </div>
+        <div class="form-group">
+          <label>Content</label>
+          <textarea id="blogContent" placeholder="Tell your story..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="blogTags" placeholder="mountain, trek, adventure">
+        </div>
+        <div class="form-group">
+          <label>Upload Photos</label>
+          <input type="file" id="blogImages" multiple accept="image/*" style="padding: 12px; cursor: pointer;">
+          <div id="imagePreview" style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px;"></div>
+        </div>
+        <button type="submit" class="submit-btn">Publish Blog</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = `${window.location.protocol}//${window.location.host}/api`;
+    let currentUser = null;
+
+    // Check authentication
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      const loginLink = document.getElementById('loginLink');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userBadge = document.getElementById('userBadge');
+      const newBlogBtn = document.getElementById('newBlogBtn');
+      const publishNote = document.getElementById('publishNote');
+
+      if (token && user) {
+        currentUser = JSON.parse(user);
+        userBadge.textContent = currentUser.username;
+        loginLink.style.display = 'none';
+        logoutBtn.style.display = 'inline-flex';
+        newBlogBtn.style.display = 'inline-flex';
+        publishNote.style.display = 'none';
+      } else {
+        currentUser = null;
+        userBadge.textContent = 'Guest';
+        loginLink.style.display = 'inline-flex';
+        logoutBtn.style.display = 'none';
+        newBlogBtn.style.display = 'none';
+        publishNote.style.display = 'block';
+      }
+
+      loadBlogs();
+    });
+
+    // Load blogs
+    async function loadBlogs() {
+      try {
+        const response = await fetch(`${API_URL}/blogs`);
+        const data = await response.json();
+
+        const grid = document.getElementById('blogsGrid');
+        grid.innerHTML = '';
+
+        data.blogs.forEach(blog => {
+          const date = new Date(blog.createdAt).toLocaleDateString();
+          const card = document.createElement('div');
+          card.className = 'blog-card';
+          card.innerHTML = `
+            <h3>${blog.title}</h3>
+            <div class="meta">${blog.authorName} · ${date}</div>
+            <p>${blog.description}</p>
+            ${blog.tags.length > 0 ? `
+              <div class="tags">
+                ${blog.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+              </div>
+            ` : ''}
+          `;
+          card.onclick = () => window.location.href = `/blog/${blog._id}`;
+          grid.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading blogs:', error);
+      }
+    }
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    });
+
+    // New blog button
+    document.getElementById('newBlogBtn').addEventListener('click', () => {
+      document.getElementById('blogModal').classList.add('open');
+    });
+
+    // Close modal
+    function closeBlogModal() {
+      document.getElementById('blogModal').classList.remove('open');
+    }
+
+    // Image preview
+    document.getElementById('blogImages').addEventListener('change', function(e) {
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = '';
+      
+      Array.from(this.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.style.width = '100px';
+          img.style.height = '100px';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '4px';
+          img.style.border = '1px solid rgba(196, 98, 26, 0.3)';
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Submit blog
+    document.getElementById('blogForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('blogTitle').value;
+      const description = document.getElementById('blogDesc').value;
+      const content = document.getElementById('blogContent').value;
+      const tags = document.getElementById('blogTags').value.split(',').map(t => t.trim()).filter(t => t);
+      const imageFiles = document.getElementById('blogImages').files;
+
+      // Convert images to base64
+      const images = [];
+      for (let file of imageFiles) {
+        const reader = new FileReader();
+        await new Promise((resolve) => {
+          reader.onload = function(event) {
+            images.push({
+              url: event.target.result,
+              caption: ''
+            });
+            resolve();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/blogs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            content,
+            tags,
+            images,
+            authorName: currentUser.username
+          })
+        });
+
+        const result = await response.json();
+        const statusEl = document.getElementById('blogStatus');
+        statusEl.style.display = 'block';
+
+        if (!response.ok) {
+          statusEl.textContent = result.error || 'Failed to create blog';
+          statusEl.style.background = 'rgba(220,53,69,0.15)';
+          statusEl.style.border = '1px solid #dc3545';
+          statusEl.style.color = '#ff6b6b';
+          return;
+        }
+
+        statusEl.textContent = 'Blog published successfully.';
+        statusEl.style.background = 'rgba(40,167,69,0.15)';
+        statusEl.style.border = '1px solid #28a745';
+        statusEl.style.color = '#51cf66';
+
+        document.getElementById('blogForm').reset();
+        document.getElementById('imagePreview').innerHTML = '';
+        setTimeout(() => {
+          closeBlogModal();
+          statusEl.style.display = 'none';
+        }, 1200);
+
+        loadBlogs();
+      } catch (error) {
+        const statusEl = document.getElementById('blogStatus');
+        statusEl.style.display = 'block';
+        statusEl.textContent = 'Error: ' + error.message;
+        statusEl.style.background = 'rgba(220,53,69,0.15)';
+        statusEl.style.border = '1px solid #dc3545';
+        statusEl.style.color = '#ff6b6b';
+      }
+    });
+
+    // Close modal on background click
+    document.getElementById('blogModal').addEventListener('click', (e) => {
+      if (e.target.id === 'blogModal') {
+        closeBlogModal();
+      }
+    });
+  </script>
+</body>
+</html>

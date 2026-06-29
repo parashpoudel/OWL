@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - OWL Community</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0d0b09 0%, #1a1612 100%);
+      padding: 20px;
+    }
+    .login-box {
+      background: var(--stone);
+      border: 1px solid rgba(196, 98, 26, 0.3);
+      padding: 56px;
+      max-width: 420px;
+      width: 100%;
+      border-radius: 4px;
+    }
+    .login-box h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 3px;
+      color: var(--snow);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .login-box p {
+      font-size: 14px;
+      color: var(--fog);
+      text-align: center;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--snow);
+      padding: 14px 16px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .form-group input:focus {
+      border-color: var(--ember);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .form-group input::placeholder {
+      color: rgba(176, 168, 152, 0.5);
+    }
+    .login-btn {
+      width: 100%;
+      background: var(--ember);
+      border: 2px solid var(--ember);
+      color: var(--stone);
+      padding: 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 16px;
+    }
+    .login-btn:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .login-links {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .login-links a {
+      color: var(--fog);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.3s;
+    }
+    .login-links a:hover {
+      color: var(--ember);
+    }
+    .error-message {
+      background: rgba(220, 53, 69, 0.2);
+      border: 1px solid #dc3545;
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 13px;
+    }
+    .success-message {
+      background: rgba(40, 167, 69, 0.2);
+      border: 1px solid #28a745;
+      color: #51cf66;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1>OWL</h1>
+      <p>Access the Community</p>
+      <div class="error-message" id="errorMsg"></div>
+      <div class="success-message" id="successMsg"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+      <div class="login-links">
+        <p style="font-size: 12px; color: var(--fog);">Back to <a href="/index.html">home</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000/api';
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
+
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed');
+        }
+
+        // Save token
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        successMsg.textContent = 'Login successful! Redirecting...';
+        successMsg.style.display = 'block';
+
+        setTimeout(() => {
+          window.location.href = data.user.isAdmin ? '/admin' : '/blogs';
+        }, 1500);
+      } catch (error) {
+        errorMsg.textContent = error.message;
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

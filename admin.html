@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - OWL Community</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #0d0b09; }
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 120px 40px 60px;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 60px;
+      padding-top: 0;
+    }
+    .admin-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 3px;
+      color: var(--snow);
+    }
+    .logout-btn {
+      background: var(--ember);
+      color: var(--stone);
+      padding: 10px 24px;
+      border: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .logout-btn:hover {
+      background: var(--gold);
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .admin-section {
+      background: var(--stone);
+      border: 1px solid rgba(196, 98, 26, 0.2);
+      padding: 32px;
+    }
+    .admin-section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: var(--snow);
+      margin-bottom: 24px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--snow);
+      padding: 10px 12px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--ember);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .create-btn {
+      width: 100%;
+      background: var(--ember);
+      border: none;
+      color: var(--stone);
+      padding: 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 16px;
+    }
+    .create-btn:hover {
+      background: var(--gold);
+    }
+    .users-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .user-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(196, 98, 26, 0.1);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-info h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      color: var(--snow);
+      margin-bottom: 4px;
+    }
+    .user-info p {
+      font-size: 12px;
+      color: var(--fog);
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .delete-btn:hover {
+      background: #c82333;
+    }
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .message {
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .error {
+      background: rgba(220, 53, 69, 0.2);
+      border: 1px solid #dc3545;
+      color: #ff6b6b;
+    }
+    .success {
+      background: rgba(40, 167, 69, 0.2);
+      border: 1px solid #28a745;
+      color: #51cf66;
+    }
+    .admin-badge {
+      background: var(--ember);
+      color: var(--stone);
+      padding: 2px 6px;
+      font-size: 10px;
+      border-radius: 2px;
+      margin-left: 8px;
+    }
+    #mainNav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(13, 11, 9, 0.95);
+      border-bottom: 1px solid rgba(196, 98, 26, 0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: var(--snow);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: var(--ember);
+    }
+    .nav-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--ember);
+      color: var(--ember);
+      padding: 10px 24px;
+      text-decoration: none;
+      transition: all 0.3s;
+      background: transparent;
+      cursor: pointer;
+    }
+    .nav-cta:hover {
+      background: var(--ember);
+      color: var(--stone);
+    }
+  </style>
+</head>
+<body>
+  <nav id="mainNav">
+    <a href="/" class="nav-logo">OWL</a>
+    <ul class="nav-links">
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/admin">Admin</a></li>
+    </ul>
+    <button class="nav-cta" id="logoutBtn">Logout</button>
+  </nav>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Admin Panel</h1>
+    </div>
+
+    <div class="admin-grid">
+      <!-- Dashboard Summary Section -->
+      <div class="admin-section">
+        <h2>Dashboard</h2>
+        <div class="message success" id="dashboardSummary" style="display:block; padding: 18px; margin-bottom: 24px;">
+          Loading dashboard...
+        </div>
+        <div class="dashboard-stats" id="dashboardStats" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+          <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: var(--snow); margin-bottom: 10px;">Members</h3>
+            <p id="memberCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
+          </div>
+          <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: var(--snow); margin-bottom: 10px;">Recent Posts</h3>
+            <p id="postCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create User Section -->
+      <div class="admin-section">
+        <h2>Create User Account</h2>
+        <div class="message" id="createMsg"></div>
+        <form id="createUserForm">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="username" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="user@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select id="isAdmin">
+              <option value="false">User</option>
+              <option value="true">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="create-btn">Create Account</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-section" style="margin-top: 40px;">
+      <h2>Community Members</h2>
+      <div class="users-list" id="usersList"></div>
+    </div>
+
+    <div class="admin-section" style="margin-top: 40px;">
+      <h2>Recent Community Posts</h2>
+      <div class="message" id="postMsg"></div>
+      <div class="users-list" id="recentPostsList"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = `${window.location.protocol}//${window.location.host}/api`;
+    let currentUser = null;
+
+    // Check admin authentication
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+
+      if (!token || !user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      currentUser = JSON.parse(user);
+      if (!currentUser.isAdmin) {
+        window.location.href = '/blogs';
+        return;
+      }
+
+      loadUsers();
+    });
+
+    // Load users and recent posts
+    async function loadUsers() {
+      try {
+        const response = await fetch(`${API_URL}/auth/users`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load users');
+        }
+
+        const data = await response.json();
+        const usersList = document.getElementById('usersList');
+        const recentPostsList = document.getElementById('recentPostsList');
+        const dashboardSummary = document.getElementById('dashboardSummary');
+        const memberCount = document.getElementById('memberCount');
+        const postCount = document.getElementById('postCount');
+
+        memberCount.textContent = data.userCount || data.users.length;
+        postCount.textContent = data.postCount || 0;
+        dashboardSummary.textContent = `Welcome back, ${currentUser.username}. Manage members and review the latest blog activity.`;
+
+        usersList.innerHTML = '';
+        data.users.forEach(user => {
+          const userItem = document.createElement('div');
+          userItem.className = 'user-item';
+          userItem.innerHTML = `
+            <div class="user-info">
+              <h4>${user.username}${user.isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}</h4>
+              <p>${user.email}</p>
+            </div>
+            <button class="delete-btn" onclick="deleteUser('${user._id}')">Remove</button>
+          `;
+          usersList.appendChild(userItem);
+        });
+
+        recentPostsList.innerHTML = '';
+        if (!data.recentPosts || data.recentPosts.length === 0) {
+          recentPostsList.innerHTML = '<p style="color: var(--fog);">No posts yet.</p>';
+        } else {
+          data.recentPosts.forEach(post => {
+            const postItem = document.createElement('div');
+            postItem.className = 'user-item';
+            const createdAt = new Date(post.createdAt).toLocaleDateString();
+            postItem.innerHTML = `
+              <div class="user-info">
+                <h4>${post.title}</h4>
+                <p>${post.author?.username || post.authorName} · ${createdAt}</p>
+              </div>
+              <div class="action-row">
+                <button class="delete-btn" onclick="deleteBlog('${post._id}')">Delete</button>
+              </div>
+            `;
+            recentPostsList.appendChild(postItem);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    }
+
+    // Create user
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const isAdmin = document.getElementById('isAdmin').value === 'true';
+
+      const msgEl = document.getElementById('createMsg');
+
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ username, email, password, isAdmin })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create user');
+        }
+
+        msgEl.textContent = `✓ User "${username}" created successfully`;
+        msgEl.className = 'message success';
+        msgEl.style.display = 'block';
+
+        document.getElementById('createUserForm').reset();
+        loadUsers();
+
+        setTimeout(() => {
+          msgEl.style.display = 'none';
+        }, 3000);
+      } catch (error) {
+        msgEl.textContent = `✗ ${error.message}`;
+        msgEl.className = 'message error';
+        msgEl.style.display = 'block';
+      }
+    });
+
+    // Delete user
+    async function deleteUser(userId) {
+      if (!confirm('Are you sure?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/auth/user/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          loadUsers();
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+
+    async function deleteBlog(blogId) {
+      if (!confirm('Delete this blog post?')) return;
+
+      const msgEl = document.getElementById('postMsg');
+      try {
+        const response = await fetch(`${API_URL}/blogs/${blogId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to delete blog');
+        }
+
+        msgEl.textContent = '✓ Blog deleted successfully';
+        msgEl.className = 'message success';
+        msgEl.style.display = 'block';
+        loadUsers();
+      } catch (error) {
+        msgEl.textContent = `✗ ${error.message}`;
+        msgEl.className = 'message error';
+        msgEl.style.display = 'block';
+      }
+    }
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    });
+  </script>
+</body>
+</html>

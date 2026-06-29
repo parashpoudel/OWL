@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poisonous Plants Guide — OWL</title>
+  <meta name="description" content="A modern, interactive field guide to poisonous plants across Nepal's Himalayan trail systems." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --stone: #1a1612;
+      --ash: #2d2820;
+      --dirt: #3d3428;
+      --rust: #8b4513;
+      --ember: #c4621a;
+      --gold: #d4930a;
+      --ice: #a8bcc4;
+      --sky: #4a6d7c;
+      --snow: #e8e4dc;
+      --fog: #b0a898;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #080704 0%, #0d0b09 100%);
+      color: var(--snow);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+    * { box-sizing: border-box; }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--ember);
+      color: var(--stone);
+      padding: 10px 14px;
+      z-index: 999;
+    }
+    .skip-link:focus { left: 16px; top: 16px; }
+    .page-shell {
+      position: relative;
+      min-height: 100vh;
+    }
+    #mainNav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: rgba(8, 7, 5, 0.94);
+      border-bottom: 1px solid rgba(196, 98, 26, 0.18);
+      backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: var(--snow);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a.is-active {
+      color: var(--ember);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-actions a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ember);
+      text-decoration: none;
+      padding: 10px 24px;
+      border: 1px solid var(--ember);
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+    .nav-actions a:hover {
+      background: var(--ember);
+      color: var(--stone);
+    }
+    .main-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 44px 28px 80px;
+    }
+    .side-nav {
+      position: sticky;
+      top: 110px;
+      align-self: start;
+      padding: 20px;
+      border: 1px solid rgba(196, 98, 26, 0.18);
+      background: rgba(10, 8, 6, 0.8);
+      border-radius: 18px;
+      height: fit-content;
+    }
+    .side-nav h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      margin: 0 0 16px;
+      color: var(--snow);
+    }
+    .side-nav a {
+      display: block;
+      padding: 8px 0;
+      color: var(--fog);
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.4;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+    .side-nav a:hover,
+    .side-nav a.is-active {
+      color: var(--ember);
+      transform: translateX(3px);
+    }
+    .content-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .panel {
+      background: rgba(11, 9, 7, 0.9);
+      border: 1px solid rgba(196, 98, 26, 0.18);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+      position: relative;
+    }
+    .panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(196, 98, 26, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+      padding: 40px 34px;
+    }
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 14px;
+    }
+    h1, h2, h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+      margin: 0;
+      color: var(--snow);
+    }
+    .hero h1 {
+      font-size: clamp(44px, 7vw, 78px);
+      line-height: 0.95;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      color: var(--fog);
+      font-size: 16px;
+      line-height: 1.75;
+      margin: 0 0 18px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .hero-actions a,
+    .hero-actions button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: transform 0.25s ease, background 0.25s ease;
+      cursor: pointer;
+    }
+    .hero-actions .primary {
+      background: var(--ember);
+      color: var(--stone);
+      font-weight: 600;
+    }
+    .hero-actions .secondary {
+      border: 1px solid rgba(196, 98, 26, 0.28);
+      color: var(--snow);
+      background: rgba(255,255,255,0.03);
+    }
+    .hero-actions a:hover,
+    .hero-actions button:hover {
+      transform: translateY(-2px);
+    }
+    .hero-visual {
+      position: relative;
+      min-height: 360px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(196, 98, 26, 0.2);
+    }
+    .hero-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-badge {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      background: rgba(8, 7, 5, 0.8);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--snow);
+      border: 1px solid rgba(196, 98, 26, 0.2);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .stat-card {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(196, 98, 26, 0.16);
+    }
+    .stat-card strong {
+      display: block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--ember);
+      margin-bottom: 6px;
+    }
+    .stat-card span {
+      font-size: 13px;
+      color: var(--fog);
+      line-height: 1.5;
+    }
+    .section-intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 18px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .section-intro p {
+      max-width: 720px;
+      color: var(--fog);
+      font-size: 15px;
+      line-height: 1.7;
+      margin: 6px 0 0;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .feature-card,
+    .zone-card,
+    .regional-card,
+    .plant-card,
+    .alert-card,
+    .timeline-item,
+    .safe-card,
+    .reference-card {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(196, 98, 26, 0.16);
+      background: rgba(255,255,255,0.03);
+    }
+    .feature-card h3,
+    .zone-card h3,
+    .regional-card h3,
+    .plant-card h3,
+    .timeline-item h3,
+    .safe-card h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: var(--snow);
+    }
+    .feature-card p,
+    .zone-card p,
+    .regional-card p,
+    .plant-card p,
+    .timeline-item p,
+    .safe-card p,
+    .reference-card p {
+      color: var(--fog);
+      line-height: 1.7;
+      margin: 0;
+      font-size: 14px;
+    }
+    .note-box {
+      padding: 16px 18px;
+      border-left: 3px solid var(--ember);
+      background: rgba(196, 98, 26, 0.08);
+      border-radius: 10px;
+      color: #f2dfb0;
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .elevation-visual {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .elevation-step {
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(196, 98, 26, 0.14);
+    }
+    .elevation-step strong { display: block; color: var(--ember); font-size: 18px; margin-bottom: 6px; }
+    .elevation-step span { color: var(--fog); font-size: 13px; line-height: 1.6; }
+    .timeline {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .timeline-item .year {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: var(--ember);
+      text-transform: uppercase;
+    }
+    .plant-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .plant-card {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .plant-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(196, 98, 26, 0.16);
+    }
+    .plant-meta { display: flex; flex-direction: column; gap: 8px; }
+    .pill {
+      display: inline-flex;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(196, 98, 26, 0.14);
+      color: #f9d89d;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .accordion {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .accordion-item {
+      border: 1px solid rgba(196, 98, 26, 0.16);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      overflow: hidden;
+    }
+    .accordion-button {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 16px 18px;
+      color: var(--snow);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .accordion-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .accordion-panel p {
+      padding: 0 18px 16px;
+      color: var(--fog);
+      line-height: 1.7;
+      margin: 0;
+      font-size: 14px;
+    }
+    .accordion-item.is-open .accordion-panel {
+      max-height: 220px;
+    }
+    .accordion-item.is-open .accordion-button {
+      color: var(--ember);
+    }
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .flow-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(196, 98, 26, 0.15);
+      min-height: 140px;
+    }
+    .flow-card strong { display: block; color: var(--ember); margin-bottom: 8px; font-size: 18px; }
+    .flow-card span { color: var(--fog); font-size: 13px; line-height: 1.6; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(196, 98, 26, 0.16);
+      padding: 12px 10px;
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    th {
+      background: rgba(196, 98, 26, 0.12);
+      color: var(--snow);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+    td:first-child { font-weight: 600; color: #f9d89d; }
+    .reference-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .reference-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-to-top {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 14px;
+      background: var(--ember);
+      color: var(--stone);
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      display: none;
+      z-index: 120;
+    }
+    .back-to-top.show { display: block; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 1080px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .side-nav { display: none; }
+      .hero { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      #mainNav { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+      .nav-links { gap: 12px; flex-wrap: wrap; }
+      .main-layout { padding: 24px 16px 60px; }
+      .panel { padding: 22px; border-radius: 18px; }
+      .stats-grid,
+      .card-grid,
+      .elevation-visual,
+      .flow-grid { grid-template-columns: 1fr; }
+      .plant-card,
+      .timeline-item { grid-template-columns: 1fr; }
+      .hero { padding: 24px; }
+      .hero-visual { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#overview">Skip to content</a>
+  <div class="page-shell">
+    <nav id="mainNav">
+      <a href="/" class="nav-logo">OWL</a>
+      <div class="nav-actions">
+        <a href="/login" class="nav-cta-login">Login</a>
+        <a href="/" class="nav-cta">Join Inner Circle</a>
+      </div>
+    </nav>
+
+    <div class="main-layout">
+      <aside class="side-nav" aria-label="Section navigation">
+        <h2>On this page</h2>
+        <a href="#overview">Overview</a>
+        <a href="#zones">Ecological Zones</a>
+        <a href="#regions">Regional Distribution</a>
+        <a href="#plants">Poisonous Plants</a>
+        <a href="#guide">Identification Guide</a>
+        <a href="#response">Symptoms &amp; Response</a>
+        <a href="#compare">Medicinal vs Poisonous</a>
+        <a href="#conservation">Conservation</a>
+        <a href="#references">References</a>
+      </aside>
+
+      <main class="content-stack">
+        <section id="overview" class="panel hero reveal">
+          <div>
+            <div class="eyebrow">Field Guide · Nepal Himalaya</div>
+            <h1>Poisonous Plants of the Himalayan Trail</h1>
+            <p>From subtropical foothills to alpine meadows, the Himalaya produces astonishing biodiversity — and some of it demands deep respect. This guide brings together the most important plant hazards, how to recognise them, and what to do if a trail encounter turns serious.</p>
+            <div class="hero-actions">
+              <a class="primary" href="#plants">Explore Plants</a>
+              <a class="secondary" href="#response">Emergency Response</a>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <strong>4</strong>
+                <span>Regional zones from east to far-west</span>
+              </div>
+              <div class="stat-card">
+                <strong>12+</strong>
+                <span>Common toxic species and look-alikes</span>
+              </div>
+              <div class="stat-card">
+                <strong>3</strong>
+                <span>Priority response steps in the field</span>
+              </div>
+              <div class="stat-card">
+                <strong>1</strong>
+                <span>Shared goal: safe, informed travel</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80" alt="Himalayan meadow with alpine vegetation" />
+            <div class="hero-badge">High-altitude trail knowledge</div>
+          </div>
+        </section>
+
+        <section class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Why it matters</div>
+              <h2>Respect the landscape, not just the altitude</h2>
+            </div>
+            <p>Many hazardous plants are visually subtle. They may appear harmless, but their sap, leaves, berries, or roots can cause severe irritation, systemic toxicity, or long-lasting burns. For trekkers, herbal collectors, and local communities alike, safe identification is an essential part of responsible travel.</p>
+          </div>
+          <div class="card-grid">
+            <div class="feature-card">
+              <h3>Hidden danger</h3>
+              <p>Plants that look ordinary on the trail can be responsible for painful skin reactions, confusion, or gastro-intestinal distress when touched or swallowed.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Local knowledge matters</h3>
+              <p>Experienced guides and nearby communities often recognise plant hazards from texture, scent, timing, and habitat — details that are easy to miss at a glance.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Field readiness</h3>
+              <p>Basic precautions — gloves, long sleeves, careful observation, and an emergency plan — reduce risk dramatically.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Conservation link</h3>
+              <p>Responsible observation protects both the hikers and the fragile alpine ecosystems that sustain these species.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="zones" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Ecological zones</div>
+              <h2>From foothills to alpine meadows</h2>
+            </div>
+            <p>Plant hazards shift with elevation and moisture. Lower forests often hide spiny, irritating species; higher slopes favour toxic bulbs, berries, and bitter herbs.</p>
+          </div>
+          <div class="card-grid">
+            <div class="zone-card">
+              <h3>Subtropical foothills</h3>
+              <p>Warm, humid valleys favour plants that cause urticaria, skin burns, or sap reactions. Dense leaf litter and damp soil can make contact more likely.</p>
+            </div>
+            <div class="zone-card">
+              <h3>Temperate forests</h3>
+              <p>At mid-elevation, species often cluster around camps, streams, and old trail edges. Their leaves or berries may be mistaken for edible plants.</p>
+            </div>
+            <div class="zone-card">
+              <h3>Alpine pastures</h3>
+              <p>Short growing seasons force plants to store compounds aggressively. Many high-altitude herbs are potent and should never be sampled casually.</p>
+            </div>
+            <div class="zone-card">
+              <h3>Snowline and scree</h3>
+              <p>Plants here are often low, compact, and deceptively harmless. Their toxicity can be severe even in small amounts.</p>
+            </div>
+          </div>
+          <div class="elevation-visual">
+            <div class="elevation-step"><strong>300–1000m</strong><span>Warm forests and streamside growth</span></div>
+            <div class="elevation-step"><strong>1000–2500m</strong><span>Temperate woodland and village edges</span></div>
+            <div class="elevation-step"><strong>2500–4000m</strong><span>Pastures, shrubs, and alpine herbs</span></div>
+            <div class="elevation-step"><strong>4000m+</strong><span>Compact, fragile mountain flora</span></div>
+          </div>
+        </section>
+
+        <section id="regions" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Regional distribution</div>
+              <h2>How the risk changes across Nepal</h2>
+            </div>
+            <p>Eastern, central, western, and far-west Nepal each host distinct ecological mixes. The most important difference is not only the plant species, but the way local people, weather, and slope exposure shape the risk.</p>
+          </div>
+          <div class="card-grid">
+            <div class="regional-card">
+              <h3>East</h3>
+              <p>Moist forests and broadleaf zones create rich habitat for irritant species and vigorous vines. Many plants here are best observed, not handled.</p>
+            </div>
+            <div class="regional-card">
+              <h3>Central</h3>
+              <p>Mixed temperate and subalpine zones bring a wider variety of toxic herbs, especially around camps and grazing land.</p>
+            </div>
+            <div class="regional-card">
+              <h3>West</h3>
+              <p>Dryer hills and exposed slopes favour species that are strong-smelling, bitter, or resinous — useful clues for cautious identification.</p>
+            </div>
+            <div class="regional-card">
+              <h3>Far-West</h3>
+              <p>Remote, high-altitude corridors combine alpine sensitivity with limited access and a high need for careful field judgement.</p>
+            </div>
+          </div>
+          <div class="note-box">A useful rule in all regions: if a plant looks unfamiliar, do not touch, chew, or collect it until it has been verified by an experienced local guide.</div>
+        </section>
+
+        <section id="plants" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Poisonous plants</div>
+              <h2>Profiles worth memorising</h2>
+            </div>
+            <p>These species represent the kind of hazards most often encountered by hikers, campers, and fieldworkers in the Himalayan belt.</p>
+          </div>
+          <div class="plant-list">
+            <div class="plant-card">
+              <img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=800&q=80" alt="Aconitum flowering plant in mountain terrain" />
+              <div class="plant-meta">
+                <span class="pill">High toxicity</span>
+                <h3>Aconitum spp. · Monkshood</h3>
+                <p>Often found in cool, wet alpine habitats. The plant is famous for highly toxic alkaloids and can cause dangerous cardiac symptoms if ingested.</p>
+              </div>
+            </div>
+            <div class="plant-card">
+              <img src="https://images.unsplash.com/photo-1468327768560-75b778cbb551?auto=format&fit=crop&w=800&q=80" alt="Datura specimen by a trail edge" />
+              <div class="plant-meta">
+                <span class="pill">Hallucinogenic / toxic</span>
+                <h3>Datura stramonium · Jimson weed</h3>
+                <p>Known for harsh, trumpet-like flowers and spiny seed capsules. Ingestion can trigger confusion, hallucinations, and serious anticholinergic effects.</p>
+              </div>
+            </div>
+            <div class="plant-card">
+              <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80" alt="Rhododendron shrub in mountain landscape" />
+              <div class="plant-meta">
+                <span class="pill">Skin / respiratory irritant</span>
+                <h3>Rhododendron spp.</h3>
+                <p>Common in the Himalayan shrub layer. Some species can irritate the skin and, in some cases, cause systemic symptoms when handled or inhaled in large amounts.</p>
+              </div>
+            </div>
+            <div class="plant-card">
+              <img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80" alt="A lush forest understory with toxic-looking foliage" />
+              <div class="plant-meta">
+                <span class="pill">Contact irritation</span>
+                <h3>Euphorbia / spurges</h3>
+                <p>These plants often exude a milky latex that causes strong skin irritation, burning, and swelling. Avoid contact even when the plant appears dry or harmless.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="guide" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Identification guide</div>
+              <h2>How to read a plant before you touch it</h2>
+            </div>
+            <p>Identification is about pattern recognition. Look at the plant in context: habitat, sap, smell, leaf arrangement, and fruit structure.</p>
+          </div>
+          <div class="accordion">
+            <div class="accordion-item is-open">
+              <button class="accordion-button" type="button">1. Observe the habitat <span>+</span></button>
+              <div class="accordion-panel">
+                <p>Many toxic plants cluster in wet soils, rocky slopes, disturbed campsites, or trail edges. A plant growing in a place that feels “off trail” deserves extra caution.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-button" type="button">2. Watch the sap and texture <span>+</span></button>
+              <div class="accordion-panel">
+                <p>Milky, sticky, or unusually fragrant exudates are often warnings. Thick latex and resinous surfaces are a red flag for irritation.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-button" type="button">3. Check leaf arrangement <span>+</span></button>
+              <div class="accordion-panel">
+                <p>Leaf patterns — opposite, whorled, or clustered — can help distinguish toxic plants from edible relatives. This is a classic field clue.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-button" type="button">4. Never rely on colour alone <span>+</span></button>
+              <div class="accordion-panel">
+                <p>Bright berries, strong flowers, or lush green growth do not guarantee safety. Some of the most dangerous plants are elegant, colourful, and easy to underestimate.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="response" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Symptoms &amp; emergency response</div>
+              <h2>Stay calm, avoid contact, get help fast</h2>
+            </div>
+            <p>Symptoms vary from mild surface irritation to systemic poisoning. In all cases, rapid removal of contamination and medical assessment matter more than guesswork.</p>
+          </div>
+          <div class="card-grid">
+            <div class="alert-card">
+              <h3>Common symptoms</h3>
+              <p>Skin burning, swelling, redness, nausea, vomiting, dizziness, mouth numbness, blurred vision, or confusion. Some exposures become serious very quickly.</p>
+            </div>
+            <div class="alert-card">
+              <h3>First field steps</h3>
+              <p>Wash exposed skin with water, remove contaminated clothing, avoid rubbing the area, and keep the person calm and still until support arrives.</p>
+            </div>
+          </div>
+          <div class="flow-grid">
+            <div class="flow-card"><strong>01</strong><span>Stop all contact and move away from the source.</span></div>
+            <div class="flow-card"><strong>02</strong><span>Rinse the skin and remove contaminated clothing.</span></div>
+            <div class="flow-card"><strong>03</strong><span>Assess breathing, alertness, and swallowing ability.</span></div>
+            <div class="flow-card"><strong>04</strong><span>Seek urgent medical help if symptoms are worsening or systemic.</span></div>
+          </div>
+          <div class="note-box">If someone has swallowed plant material or is struggling to breathe, treat the situation as an emergency and seek immediate assistance.</div>
+        </section>
+
+        <section id="compare" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Medicinal vs poisonous</div>
+              <h2>Not every useful plant is safe to use casually</h2>
+            </div>
+            <p>Many Himalayan plants have long histories in traditional medicine. The same plant can become dangerous when misidentified, overused, or prepared improperly.</p>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Plant type</th>
+                <th>Useful trait</th>
+                <th>Risk if misused</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicinal herbs</td>
+                <td>Can support wellness when used correctly and in known doses.</td>
+                <td>May cause upset, poisoning, or dangerous interactions if overused.</td>
+              </tr>
+              <tr>
+                <td>Poisonous look-alikes</td>
+                <td>Often resemble edible or medicinal plants at a glance.</td>
+                <td>May trigger severe irritation or systemic toxicity.</td>
+              </tr>
+              <tr>
+                <td>Wild edibles</td>
+                <td>Often safe only when properly identified and prepared.</td>
+                <td>Still risky if confused with toxic relatives or gathered in the wrong season.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Safe wild plants</div>
+              <h2>Edible plants to appreciate with caution</h2>
+            </div>
+            <p>Some wild plants are edible and culturally important, but even they should be treated with care. The safest rule is simple: never eat a plant you cannot identify with certainty.</p>
+          </div>
+          <div class="card-grid">
+            <div class="safe-card">
+              <h3>Stinging nettle</h3>
+              <p>Useful when properly handled and cooked, but its hairs can sting and irritate skin on contact.</p>
+            </div>
+            <div class="safe-card">
+              <h3>Wild berries</h3>
+              <p>Some are edible, but many are not. Colour alone is never enough to judge safety.</p>
+            </div>
+            <div class="safe-card">
+              <h3>Young shoots</h3>
+              <p>Even tender shoots can be confused with toxic plants. Only collect them when you are fully confident in the identification.</p>
+            </div>
+            <div class="safe-card">
+              <h3>Mountain herbs</h3>
+              <p>Many alpine plants are prized in home remedies, but dosage and preparation matter deeply.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="conservation" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">Conservation</div>
+              <h2>Protect the plants that protect the landscape</h2>
+            </div>
+            <p>The Himalaya is under pressure from grazing, tourism, habitat change, and overharvesting. Conservation is not just a policy issue; it is a field habit.</p>
+          </div>
+          <div class="card-grid">
+            <div class="feature-card">
+              <h3>Observe, don’t collect</h3>
+              <p>Photograph and leave plants in place whenever possible. This protects fragile populations and reduces accidental exposure.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Leave no trace</h3>
+              <p>Stay on durable surfaces, avoid trampling new growth, and respect seasonal closures or community restrictions.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Support local stewardship</h3>
+              <p>Communities know the land best. Their guidance is often the safest and most sustainable source of knowledge.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Educate before exploring</h3>
+              <p>Every safe trail encounter begins with awareness. Knowledge builds confidence without reducing wonder.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="references" class="panel reveal">
+          <div class="section-intro">
+            <div>
+              <div class="eyebrow">References</div>
+              <h2>Further reading and field resources</h2>
+            </div>
+            <p>This page is designed for practical field use, not as a substitute for professional medical advice or local botanical expertise.</p>
+          </div>
+          <div class="reference-list">
+            <div class="reference-card">
+              <p>Local herbaria, regional botanical field guides, and community-based plant knowledge.</p>
+            </div>
+            <div class="reference-card">
+              <p>Medical advice from qualified professionals for any severe exposure, especially swallowing incidents or breathing difficulty.</p>
+            </div>
+            <div class="reference-card">
+              <p>Trail safety and wilderness first aid training for remote Himalayan travel.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach((item) => observer.observe(item));
+
+    const navLinks = document.querySelectorAll('.nav-links a, .side-nav a');
+    const sections = Array.from(document.querySelectorAll('main section[id]'));
+
+    const onScroll = () => {
+      const scrollY = window.scrollY + 140;
+      let current = sections[0]?.id;
+      sections.forEach((section) => {
+        if (scrollY >= section.offsetTop) current = section.id;
+      });
+      navLinks.forEach((link) => {
+        const target = link.getAttribute('href')?.replace('#', '');
+        link.classList.toggle('is-active', target === current);
+      });
+      const backToTop = document.getElementById('backToTop');
+      if (backToTop) backToTop.classList.toggle('show', window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    document.getElementById('backToTop')?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.querySelectorAll('.accordion-item').forEach((item) => {
+      const button = item.querySelector('.accordion-button');
+      button?.addEventListener('click', () => {
+        const alreadyOpen = item.classList.contains('is-open');
+        document.querySelectorAll('.accordion-item').forEach((entry) => entry.classList.remove('is-open'));
+        if (!alreadyOpen) item.classList.add('is-open');
+      });
+    });
+  </script>
+</body>
+</html>

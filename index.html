@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OWL — Off-trail. Unsupported. Real.</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">OWL</a>
+  <ul class="nav-links">
+    <li><a href="#manifesto">What We Are</a></li>
+    <li><a href="#model">The Model</a></li>
+    <li><a href="#terrain-map">First Route</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="blogs.html">Blogs</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="nav-cta-login" id="loginLink">Login</a>
+    <a href="#" class="nav-cta" onclick="openModal(event)">Join Inner Circle</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Far West Nepal Himalaya · Est. 2025</p>
+    <h1 class="hero-title">OWL</h1>
+    <p class="hero-sub">Off-trail &nbsp;·&nbsp; Unsupported &nbsp;·&nbsp; Real</p>
+    <p class="hero-tagline">We find the line. You live it.</p>
+  </div>
+  <div class="scroll-hint">
+    <span>ASCEND</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line">
+    <div class="divider-rule"></div>
+    <span class="divider-text">River Egress — Whitewater Finish</span>
+    <div class="divider-rule"></div>
+  </div>
+</div>
+
+<!-- SCENE 4: RIVER / RAFTING -->
+<section class="scene-section" id="scene-river" style="min-height:110vh;">
+  <div class="scene-bg" id="bg-river" style="background-image:url('assets/river.jpg');"></div>
+  <div class="scene-gradient-top"></div>
+  <div class="scene-gradient-bottom"></div>
+  <div class="scene-content right" style="padding-top:60px;">
+    <p class="scene-label fade-up">Zone 04 — River Egress</p>
+    <h2 class="scene-title fade-up">Ride the River Out</h2>
+    <p class="scene-body fade-up">Some OWL traverses end on the water. The Karnali and its tributaries drain the far west Himalaya into furious, uncrowded rapids. Fast, cold, unrun stretches. The traverse doesn't end with a flight — it ends when the river lets you off.</p>
+    <div class="scene-stats fade-up">
+      <div class="stat-item">
+        <div class="stat-num">Karnali</div>
+        <div class="stat-label">River System</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">Class IV</div>
+        <div class="stat-label">Technical Whitewater</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line">
+    <div class="divider-rule"></div>
+    <span class="divider-text">Lower Terrain — Subtropical Zone</span>
+    <div class="divider-rule"></div>
+  </div>
+</div>
+
+<!-- SCENE 3: JUNGLE CAMP -->
+<section class="scene-section" id="scene-jungle" style="min-height:110vh;">
+  <div class="scene-bg" id="bg-jungle" style="background-image:url('assets/jungle.jpg');"></div>
+  <div class="scene-gradient-top"></div>
+  <div class="scene-gradient-bottom"></div>
+  <div class="scene-content" style="padding-top:60px;">
+    <p class="scene-label fade-up">Zone 03 — Wild Camp</p>
+    <h2 class="scene-title fade-up">Night in the Jungle</h2>
+    <p class="scene-body fade-up">Where the gorges flatten into subtropical density. No tea house, no lodge. You pitch where the founder has camped before — scouted, checked, known. The forest at night in western Nepal is something else. No sanitised safari. Just the dark and what lives in it.</p>
+    <div class="scene-stats fade-up">
+      <div class="stat-item">
+        <div class="stat-num">1st</div>
+        <div class="stat-label">Route Scouted Personally</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">Zero</div>
+        <div class="stat-label">Tea Houses</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<div class="divider">
+  <div class="divider-line">
+    <div class="divider-rule"></div>
+    <span class="divider-text">Mid Altitude — Deep Gorge Terrain</span>
+    <div class="divider-rule"></div>
+  </div>
+</div>
+<!-- SCENE 2: VALLEY TREK -->
+<section class="scene-section" id="scene-valley" style="min-height:110vh;">
+  <div class="scene-bg" id="bg-valley" style="background-image:url('assets/gorge.jpeg');"></div>
+  <div class="scene-gradient-top"></div>
+  <div class="scene-gradient-bottom"></div>
+  <div class="scene-content right" style="padding-top:60px;">
+    <p class="scene-label fade-up">Zone 02 — Valley Corridor</p>
+    <h2 class="scene-title fade-up">Into the Gorge Country</h2>
+    <p class="scene-body fade-up">Fast rivers, sheer walls, villages that have never seen a foreign trekker. The Great Himalayan Trail's wildest section. Local communities untouched by trekking tourism — genuine hospitality, not a performance. You camp where the terrain allows.</p>
+    <div class="scene-stats fade-up">
+      <div class="stat-item">
+        <div class="stat-num">4–6</div>
+        <div class="stat-label">Group Max</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Local Porters</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider">
+  <div class="divider-line">
+    <div class="divider-rule"></div>
+    <span class="divider-text">High Alpine — 5,800m+</span>
+    <div class="divider-rule"></div>
+  </div>
+</div>
+
+<!-- SCENE 1: HIGH MOUNTAIN DESCENT -->
+<section class="scene-section" id="scene-alpine" style="min-height:110vh;">
+  <div class="scene-bg" id="bg-alpine" style="background-image:url('assets/mountain.JPG');"></div>
+  <div class="scene-gradient-top"></div>
+  <div class="scene-gradient-bottom"></div>
+  <div class="scene-content" style="padding-top:80px;">
+    <p class="scene-label fade-up">Zone 01 — Alpine Traverse</p>
+    <h2 class="scene-title fade-up">Peaks No Map Has Named</h2>
+    <p class="scene-body fade-up">Api Himal, Saipal Himal, the Darchula–Humla corridor. Terrain that sits at the edge of the known world. You descend ridgelines that have no route, no fixed ropes, no rescue infrastructure. Just the mountain and whoever you are when you're on it.</p>
+    <div class="scene-stats fade-up">
+      <div class="stat-item">
+        <div class="stat-num">6,800m</div>
+        <div class="stat-label">Peak Height</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Recorded Traverses</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">14</div>
+        <div class="stat-label">Days Maximum</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto-bg-text">OWL</div>
+  <div class="manifesto-inner">
+    <p class="scene-label" style="text-align:center;margin-bottom:20px;">What This Is</p>
+    <h2 class="manifesto-quote fade-up">
+      Not a trekking company.<br>
+      An <span>access community</span><br>
+      for terrain that hasn't<br>
+      been found yet.
+    </h2>
+    <p class="manifesto-sub fade-up">OWL is built by someone who lives in far west Nepal. Not a visiting operator flying in from Kathmandu or London. Someone who knows the valleys, the passes, the seasons, and the people — because this is home. Every route is walked first. Every group is small. Every local partner knows the land because they live on it.</p>
+  </div>
+</section>
+
+<!-- THE MODEL -->
+<section id="model">
+  <h2 class="section-heading fade-up">The OWL Model</h2>
+  <div class="model-grid">
+    <div class="model-card fade-up">
+      <div class="model-card-icon">01 — The Route</div>
+      <div class="model-card-title">Point to Point</div>
+      <div class="model-card-body">Start village to end village. No marked trail between them. No repeating ground. No returning the way you came.</div>
+    </div>
+    <div class="model-card fade-up">
+      <div class="model-card-icon">02 — The Scout</div>
+      <div class="model-card-title">Walked First</div>
+      <div class="model-card-body">Every route is personally walked by OWL's founder before it is offered to any group. Not partially. Every metre.</div>
+    </div>
+    <div class="model-card fade-up">
+      <div class="model-card-icon">03 — The Group</div>
+      <div class="model-card-title">Max 4–6</div>
+      <div class="model-card-body">Always small. Always intentional. The moment it scales beyond that, it becomes something else entirely.</div>
+    </div>
+    <div class="model-card fade-up">
+      <div class="model-card-icon">04 — The Support</div>
+      <div class="model-card-title">Local Porters</div>
+      <div class="model-card-body">Two local porters from the region carry camp and food. Adventurers carry daypacks only. Local knowledge is not optional — it is the foundation.</div>
+    </div>
+    <div class="model-card fade-up">
+      <div class="model-card-icon">05 — The Safety</div>
+      <div class="model-card-title">Sat Comms</div>
+      <div class="model-card-body">Satellite communications and a clear emergency protocol. A simple written agreement before every traverse. No illusions about the risk.</div>
+    </div>
+    <div class="model-card fade-up">
+      <div class="model-card-icon">06 — The Cost</div>
+      <div class="model-card-title">Real Numbers</div>
+      <div class="model-card-body">Enough to cover real costs and respect everyone's time. No luxury markup. No profit-first thinking. Built to be honest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE RULES -->
+<section id="rules">
+  <h2 class="section-heading fade-up" style="margin-bottom:0;padding-bottom:40px;">Rules We Never Break</h2>
+  <div class="rules-grid">
+    <div class="rule fade-up" data-num="1">
+      <div class="rule-num">01</div>
+      <div class="rule-title">Scout First</div>
+      <div class="rule-body">No route goes to a group until the founder has walked every metre of it personally. The terrain must be known before it is shared. This is not a promise — it is a condition of operation.</div>
+    </div>
+    <div class="rule fade-up" data-num="2">
+      <div class="rule-num">02</div>
+      <div class="rule-title">Stay Small</div>
+      <div class="rule-body">Never more than 6 people on a traverse. The moment it scales beyond that, it becomes something else. Something we don't want to build. Small is not a limitation — it is the product.</div>
+    </div>
+    <div class="rule fade-up" data-num="3">
+      <div class="rule-num">03</div>
+      <div class="rule-title">Local is Core</div>
+      <div class="rule-body">One trusted local partner per region. Not a Kathmandu agency. Someone who knows the land because they live on it. The community benefits from every traverse we run.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TERRAIN MAP -->
+<section id="terrain-map">
+  <h2 class="section-heading fade-up">The Debut Traverse</h2>
+  <p style="color:var(--fog);font-size:16px;max-width:600px;margin-bottom:40px;font-weight:300;line-height:1.8;" class="fade-up">Darchula to Humla — one of the least-walked, least-documented corridors in the entire Himalayan range. Hover the map to explore waypoints.</p>
+  <div class="map-container">
+    <canvas id="map-canvas"></canvas>
+    <div class="map-overlay-text">First Route — Scout Phase Active</div>
+    <div class="map-legend">
+      <div class="map-legend-item"><div class="legend-dot" style="background:#c4621a;"></div>Start / End Points</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#d4930a;"></div>High Passes</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#4a6d7c;"></div>River Crossings</div>
+      <div class="map-legend-item"><div class="legend-dot" style="background:#6b8f6b;"></div>Camp Sites</div>
+    </div>
+    <div class="map-tooltip" id="mapTooltip"></div>
+  </div>
+  <div class="route-grid fade-up">
+    <div class="route-detail">
+      <div class="route-detail-label">Zone</div>
+      <div class="route-detail-val">Far West Nepal</div>
+      <div class="route-detail-sub">Darchula to Humla — via Api and Saipal Himal massif</div>
+    </div>
+    <div class="route-detail">
+      <div class="route-detail-label">Duration</div>
+      <div class="route-detail-val">10–14 Days</div>
+      <div class="route-detail-sub">Dependent on conditions and group pace</div>
+    </div>
+    <div class="route-detail">
+      <div class="route-detail-label">Terrain</div>
+      <div class="route-detail-val">Mixed Extreme</div>
+      <div class="route-detail-sub">Deep gorges · High passes · Fast rivers · Dense forest</div>
+    </div>
+    <div class="route-detail">
+      <div class="route-detail-label">Status</div>
+      <div class="route-detail-val">Scout Phase</div>
+      <div class="route-detail-sub">Founder walking the line — first group invite to inner circle members</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section id="who">
+  <div class="who-grid">
+    <div>
+      <p class="scene-label fade-up">Who OWL Is For</p>
+      <h2 class="section-heading fade-up" style="margin-bottom:0;">Not for everyone.</h2>
+      <ul class="who-list">
+        <li class="fade-up">Done the classic routes and bored of them — Everest Base Camp, Annapurna Circuit, all of it.</li>
+        <li class="fade-up">Treat wild places as a way of life — not a bucket list or a holiday or content.</li>
+        <li class="fade-up">Comfortable with uncertainty, discomfort, and genuine remoteness with no rescue guarantee.</li>
+        <li class="fade-up">Want an experience with no trip report to google beforehand. None exists.</li>
+        <li class="fade-up">Respect local terrain, culture, and community — not just admire it from a distance.</li>
+        <li class="fade-up">Mountaineers, long-distance trekkers, expedition wanderers, photographers, writers, filmmakers.</li>
+      </ul>
+    </div>
+    <div class="who-image fade-in" style="background-image:url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1200&q=85');"></div>
+  </div>
+</section>
+
+<!-- COMMUNITY STAGES -->
+<section id="community">
+  <p class="scene-label fade-up" style="margin-bottom:16px;">How It Starts</p>
+  <h2 class="section-heading fade-up">Community First</h2>
+  <div class="stages">
+    <div class="stage fade-up">
+      <div class="stage-dot">1</div>
+      <div class="stage-title">Inner Circle</div>
+      <div class="stage-body">10–20 people who understand what OWL is. Shared privately. The founder shares the terrain, the scouting, the honest reality of far west Nepal.</div>
+    </div>
+    <div class="stage fade-up">
+      <div class="stage-dot">2</div>
+      <div class="stage-title">First Traverse</div>
+      <div class="stage-body">3–4 people from the inner circle. Costs shared. Invitation only. The proof of concept — walked, documented, told honestly.</div>
+    </div>
+    <div class="stage fade-up">
+      <div class="stage-dot">3</div>
+      <div class="stage-title">The Story Goes Out</div>
+      <div class="stage-body">One short film. Real writing. No polish. The terrain speaks for itself. The right people find OWL through that story.</div>
+    </div>
+    <div class="stage fade-up">
+      <div class="stage-dot">4</div>
+      <div class="stage-title">Registration</div>
+      <div class="stage-body">Once the community is real and the model is proven, OWL formalises. The company is built around something already alive.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1800&q=90');"></div>
+  <div class="cta-overlay"></div>
+  <div class="cta-content">
+    <p class="scene-label fade-up">Pre-Registration · 2025</p>
+    <h2 class="cta-title fade-up">Serious people. Real terrain. No audience.</h2>
+    <p class="cta-body fade-up">The inner circle is 10–20 people. If you have to ask whether you qualify, you probably don't. If you know — reach out. One message. Tell us where you've been and what you're looking for. That's the whole process.</p>
+    <div class="fade-up">
+      <a href="#" class="cta-btn" onclick="openModal(event)">Request Access</a>
+      <a href="#manifesto" class="cta-btn-ghost">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">OWL</div>
+      <div class="footer-tagline">Off-trail. Unsupported. Real. &nbsp;·&nbsp; owl.community</div>
+    </div>
+    <div class="footer-links">
+      <a href="#manifesto">What We Are</a>
+      <a href="#model">The Model</a>
+      <a href="#terrain-map">First Route</a>
+      <a href="#who">Who</a>
+      <a href="#community">Community</a>
+      <a href="#" onclick="openModal(event)">Request Access</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 OWL Community Edition · Pre-Registration</span>
+    <span class="footer-location">Far West Nepal · Darchula–Humla</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <div class="modal-title">Request Access</div>
+    <p class="modal-sub">Inner circle is 10–20 people. One message. Tell us where you've been and what you're looking for.</p>
+    <div class="form-field">
+      <label>Your Name</label>
+      <input type="text" placeholder="Full name">
+    </div>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" placeholder="your@email.com">
+    </div>
+    <div class="form-field">
+      <label>Background</label>
+      <select>
+        <option value="">Select your background</option>
+        <option>Mountaineer / Alpinist</option>
+        <option>Long-distance Trekker</option>
+        <option>Expedition Photographer / Filmmaker</option>
+        <option>Writer / Journalist</option>
+        <option>Whitewater / River Adventurer</option>
+        <option>Other — explain below</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Where you've been &amp; what you're looking for</label>
+      <textarea placeholder="No pitch needed. Just the truth about where you've been and what draws you to this."></textarea>
+    </div>
+    <button class="form-submit" onclick="sendEmail()">Send Request</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+  // Check login status and update nav
+  window.addEventListener('load', () => {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    const loginLink = document.getElementById('loginLink');
+
+    if (token && user) {
+      const userData = JSON.parse(user);
+      loginLink.textContent = `${userData.username}`;
+      loginLink.href = userData.isAdmin ? '/admin' : '/blogs';
+    }
+  });
+</script>
+
+</body>
+</html>
