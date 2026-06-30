@@ -36,7 +36,7 @@ const sendCredentialsEmail = async (email, username, password) => {
           <p style="color: #666;">Please keep these credentials safe. You can change your password after logging in.</p>
           
           <p style="color: #666;">
-            <a href="http://localhost:5000/login" style="color: #c4621a; text-decoration: none;">Click here to login</a>
+            <a href="/login" style="color: #c4621a; text-decoration: none;">Click here to login</a>
           </p>
           
           <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
