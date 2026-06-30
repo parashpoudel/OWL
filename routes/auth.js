@@ -74,7 +74,8 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password required' });
     }
-
+console.log("Login request");
+console.log("MongoDB state:", require('mongoose').connection.readyState);
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });

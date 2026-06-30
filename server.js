@@ -22,15 +22,18 @@ app.get("/test", (req, res) => {
   });
 });
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+console.log("Connecting to MongoDB...");
+
+mongoose.connect(process.env.MONGODB_URI)
 .then(async () => {
-  console.log('MongoDB connected');
+  console.log("✅ MongoDB connected");
+  console.log("Connection state:", mongoose.connection.readyState);
+
   await createDefaultAdmin();
 })
-.catch(err => console.log('MongoDB connection error:', err));
+.catch(err => {
+  console.error("❌ MongoDB connection error:", err);
+});
 
 const User = require('./models/User');
 
