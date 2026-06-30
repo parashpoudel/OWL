@@ -14,6 +14,13 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(express.static(path.join(__dirname)));
 
+app.get("/test", (req, res) => {
+  res.json({
+    dirname: __dirname,
+    cwd: process.cwd(),
+    files: require("fs").readdirSync(__dirname)
+  });
+});
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
