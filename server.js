@@ -38,7 +38,7 @@ const User = require('./models/User');
 // Import Routes
 const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blogs');
-
+const uploadRoutes = require('./routes/upload');
 let adminInitialized = false;
 
 app.use(async (req, res, next) => {
@@ -58,6 +58,7 @@ app.use(async (req, res, next) => {
 // Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Create a default admin if none exists
 const createDefaultAdmin = async () => {

@@ -676,73 +676,44 @@
       const tags = document.getElementById('blogTags').value.split(',').map(t => t.trim()).filter(t => t);
       const imageFiles = document.getElementById('blogImages').files;
 
-      // Convert images to base64
-      const images = [];
-      for (let file of imageFiles) {
-        const reader = new FileReader();
-        await new Promise((resolve) => {
-          reader.onload = function(event) {
-            images.push({
-              url: event.target.result,
-              caption: ''
-            });
-            resolve();
-          };
-          reader.readAsDataURL(file);
-        });
-      }
+   // Upload images to Cloudinary
+let images = [];
 
-      try {
-        const response = await fetch(`${API_URL}/blogs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({
-            title,
-            description,
-            content,
-            tags,
-            images,
-            authorName: currentUser.username
-          })
-        });
+if (imageFiles.length > 0) {
 
-        const result = await response.json();
-        const statusEl = document.getElementById('blogStatus');
-        statusEl.style.display = 'block';
+  const formData = new FormData();
 
-        if (!response.ok) {
-          statusEl.textContent = result.error || 'Failed to create blog';
-          statusEl.style.background = 'rgba(220,53,69,0.15)';
-          statusEl.style.border = '1px solid #dc3545';
-          statusEl.style.color = '#ff6b6b';
-          return;
-        }
 
-        statusEl.textContent = 'Blog published successfully.';
-        statusEl.style.background = 'rgba(40,167,69,0.15)';
-        statusEl.style.border = '1px solid #28a745';
-        statusEl.style.color = '#51cf66';
+  for (let file of imageFiles) {
+    formData.append("images", file);
+  }
 
-        document.getElementById('blogForm').reset();
-        document.getElementById('imagePreview').innerHTML = '';
-        setTimeout(() => {
-          closeBlogModal();
-          statusEl.style.display = 'none';
-        }, 1200);
 
-        loadBlogs();
-      } catch (error) {
-        const statusEl = document.getElementById('blogStatus');
-        statusEl.style.display = 'block';
-        statusEl.textContent = 'Error: ' + error.message;
-        statusEl.style.background = 'rgba(220,53,69,0.15)';
-        statusEl.style.border = '1px solid #dc3545';
-        statusEl.style.color = '#ff6b6b';
-      }
-    });
+  const uploadResponse = await fetch(`${API_URL}/upload`, {
+
+    method:"POST",
+
+    headers:{
+      "Authorization":
+      `Bearer ${localStorage.getItem('token')}`
+    },
+
+    body:formData
+
+  });
+
+
+  const uploadResult = await uploadResponse.json();
+
+
+  if(!uploadResponse.ok){
+    throw new Error(uploadResult.error);
+  }
+
+
+  images = uploadResult.images;
+
+}
 
     // Close modal on background click
     document.getElementById('blogModal').addEventListener('click', (e) => {
