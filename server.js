@@ -22,18 +22,7 @@ app.get("/test", (req, res) => {
   });
 });
 // MongoDB Connection
-console.log("Connecting to MongoDB...");
-
-mongoose.connect(process.env.MONGODB_URI)
-.then(async () => {
-  console.log("✅ MongoDB connected");
-  console.log("Connection state:", mongoose.connection.readyState);
-
-  await createDefaultAdmin();
-})
-.catch(err => {
-  console.error("❌ MongoDB connection error:", err);
-});
+const connectDB = require("./lib/db");
 
 const User = require('./models/User');
 
@@ -41,6 +30,22 @@ const User = require('./models/User');
 const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blogs');
 
+let adminInitialized = false;
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+
+    if (!adminInitialized) {
+      await createDefaultAdmin();
+      adminInitialized = true;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 // Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
