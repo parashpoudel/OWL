@@ -76,6 +76,17 @@ router.post('/login', async (req, res) => {
     }
 console.log("Login request");
 console.log("MongoDB state:", require('mongoose').connection.readyState);
+
+const mongoose = require('mongoose');
+
+console.log('Mongo readyState:', mongoose.connection.readyState);
+
+if (mongoose.connection.readyState !== 1) {
+  return res.status(503).json({
+    error: 'Database is not connected',
+    state: mongoose.connection.readyState
+  });
+}
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
