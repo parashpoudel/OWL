@@ -3,11 +3,20 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-
+const cloudinary = require("./config/cloudinary");
 dotenv.config();
 
 const app = express();
+app.get("/cloudinary-test", async (req, res) => {
+  try {
+    const result = await cloudinary.api.ping();
 
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
