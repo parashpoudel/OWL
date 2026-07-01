@@ -1,10 +1,13 @@
+
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+dotenv.config();
 const path = require('path');
 const cloudinary = require("./config/cloudinary");
-dotenv.config();
+
 
 const app = express();
 app.get("/cloudinary-test", async (req, res) => {
@@ -39,6 +42,7 @@ const User = require('./models/User');
 const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blogs');
 const uploadRoutes = require('./routes/upload');
+const conquestRoutes = require('./routes/conquests');
 let adminInitialized = false;
 
 app.use(async (req, res, next) => {
@@ -59,6 +63,7 @@ app.use(async (req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/conquests', conquestRoutes);
 
 // Create a default admin if none exists
 const createDefaultAdmin = async () => {
@@ -107,6 +112,14 @@ app.get('/plants', (req, res) => {
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/past-conquests', (req, res) => {
+  res.sendFile(path.join(__dirname, 'past-conquests.html'));
+});
+
+app.get('/conquest/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, 'conquest.html'));
 });
 
 // Error handling middleware

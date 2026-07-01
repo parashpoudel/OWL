@@ -427,6 +427,11 @@
 <body>
   <nav id="mainNav">
     <a href="/" class="nav-logo">OWL</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/past-conquests">Past Conquests</a></li>
+    </ul>
     <div class="nav-actions">
       <a href="/login" class="nav-cta-login" id="loginLink">Login</a>
       <a href="/" class="nav-cta">Join Inner Circle</a>
@@ -447,24 +452,36 @@
     </div>
 
     <div id="passwordCard" class="password-card" style="display:none;">
-      <h3>Change Password</h3>
-      <p>Keep your account secure by updating your password anytime.</p>
-      <div class="message" id="passwordMessage"></div>
-      <form id="changePasswordForm">
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" id="currentPassword" placeholder="••••••••" required>
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="newPassword" placeholder="••••••••" required>
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="confirmPassword" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="submit-btn" style="margin-top: 4px;">Update Password</button>
-      </form>
+      <h3>Account</h3>
+      <p>Manage your account settings.</p>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button id="openChangePasswordBtnBlog" class="submit-btn">Change Password</button>
+        <a href="/" class="nav-cta" style="align-self:center;">Back to Home</a>
+      </div>
+    </div>
+
+    <!-- Password modal for blog/user -->
+    <div id="passwordModalBlog" class="blog-modal" style="display:none;">
+      <div class="modal-content">
+        <button class="close-btn" id="closePasswordModalBlog">&times;</button>
+        <h2 class="modal-title">Change Password</h2>
+        <div class="message" id="passwordMessageModal" style="display:none;"></div>
+        <form id="passwordModalFormBlog">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="pw_current_blog" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="pw_new_blog" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="pw_confirm_blog" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="submit-btn">Update Password</button>
+        </form>
+      </div>
     </div>
 
     <div class="blog-callout" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(212,174,93,0.18); padding: 24px; margin-bottom: 32px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
@@ -545,25 +562,44 @@
         document.getElementById('passwordCard').style.display = 'none';
       }
 
-      document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+      // Password modal (user)
+      const openBtnBlog = document.getElementById('openChangePasswordBtnBlog');
+      const modalBlog = document.getElementById('passwordModalBlog');
+      const closeModalBlog = document.getElementById('closePasswordModalBlog');
+      const modalMsgBlog = document.getElementById('passwordMessageModal');
 
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const msgEl = document.getElementById('passwordMessage');
+      openBtnBlog?.addEventListener('click', () => {
+        modalBlog.classList.add('open');
+      });
+      closeModalBlog?.addEventListener('click', () => {
+        modalBlog.classList.remove('open');
+        modalMsgBlog.style.display = 'none';
+        document.getElementById('passwordModalFormBlog').reset();
+      });
+      modalBlog?.addEventListener('click', (e) => {
+        if (e.target === modalBlog) {
+          modalBlog.classList.remove('open');
+          modalMsgBlog.style.display = 'none';
+          document.getElementById('passwordModalFormBlog').reset();
+        }
+      });
+
+      document.getElementById('passwordModalFormBlog').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('pw_current_blog').value;
+        const newPassword = document.getElementById('pw_new_blog').value;
+        const confirmPassword = document.getElementById('pw_confirm_blog').value;
 
         if (newPassword.length < 6) {
-          msgEl.textContent = '✗ New password must be at least 6 characters long';
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsgBlog.textContent = '✗ New password must be at least 6 characters long';
+          modalMsgBlog.className = 'message error';
+          modalMsgBlog.style.display = 'block';
           return;
         }
-
         if (newPassword !== confirmPassword) {
-          msgEl.textContent = '✗ New passwords do not match';
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsgBlog.textContent = '✗ New passwords do not match';
+          modalMsgBlog.className = 'message error';
+          modalMsgBlog.style.display = 'block';
           return;
         }
 
@@ -578,19 +614,17 @@
           });
 
           const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || 'Failed to update password');
 
-          if (!response.ok) {
-            throw new Error(data.error || 'Failed to update password');
-          }
-
-          msgEl.textContent = `✓ ${data.message}`;
-          msgEl.className = 'message success';
-          msgEl.style.display = 'block';
-          document.getElementById('changePasswordForm').reset();
-        } catch (error) {
-          msgEl.textContent = `✗ ${error.message}`;
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsgBlog.textContent = `✓ ${data.message}`;
+          modalMsgBlog.className = 'message success';
+          modalMsgBlog.style.display = 'block';
+          document.getElementById('passwordModalFormBlog').reset();
+          setTimeout(()=>{ modalBlog.classList.remove('open'); modalMsgBlog.style.display='none'; }, 1400);
+        } catch (err) {
+          modalMsgBlog.textContent = `✗ ${err.message}`;
+          modalMsgBlog.className = 'message error';
+          modalMsgBlog.style.display = 'block';
         }
       });
 
@@ -667,53 +701,100 @@
     });
 
     // Submit blog
-    document.getElementById('blogForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+document.getElementById('blogForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      const title = document.getElementById('blogTitle').value;
-      const description = document.getElementById('blogDesc').value;
-      const content = document.getElementById('blogContent').value;
-      const tags = document.getElementById('blogTags').value.split(',').map(t => t.trim()).filter(t => t);
-      const imageFiles = document.getElementById('blogImages').files;
+  const title = document.getElementById('blogTitle').value;
+  const description = document.getElementById('blogDesc').value;
+  const content = document.getElementById('blogContent').value;
+  const tags = document.getElementById('blogTags').value
+    .split(',')
+    .map(t => t.trim())
+    .filter(t => t);
 
-   // Upload images to Cloudinary
-let images = [];
+  const imageFiles = document.getElementById('blogImages').files;
 
-if (imageFiles.length > 0) {
+  const statusEl = document.getElementById('blogStatus');
+  statusEl.style.display = 'block';
 
-  const formData = new FormData();
+  try {
 
+    // Upload images to Cloudinary
+    let images = [];
 
-  for (let file of imageFiles) {
-    formData.append("images", file);
+    if (imageFiles.length > 0) {
+
+      const formData = new FormData();
+
+      for (const file of imageFiles) {
+        formData.append("images", file);
+      }
+
+      const uploadResponse = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData
+      });
+
+      const uploadResult = await uploadResponse.json();
+
+      if (!uploadResponse.ok) {
+        throw new Error(uploadResult.error || "Image upload failed");
+      }
+
+      images = uploadResult.images;
+    }
+
+    // Create blog
+    const response = await fetch(`${API_URL}/blogs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        content,
+        tags,
+        images,
+        authorName: currentUser.username
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to publish blog");
+    }
+
+    statusEl.textContent = "Blog published successfully.";
+    statusEl.style.background = "rgba(40,167,69,0.15)";
+    statusEl.style.border = "1px solid #28a745";
+    statusEl.style.color = "#51cf66";
+
+    document.getElementById('blogForm').reset();
+    document.getElementById('imagePreview').innerHTML = "";
+
+    setTimeout(() => {
+      closeBlogModal();
+      statusEl.style.display = "none";
+    }, 1200);
+
+    loadBlogs();
+
+  } catch (error) {
+
+    statusEl.textContent = error.message;
+    statusEl.style.background = "rgba(220,53,69,0.15)";
+    statusEl.style.border = "1px solid #dc3545";
+    statusEl.style.color = "#ff6b6b";
+
   }
 
-
-  const uploadResponse = await fetch(`${API_URL}/upload`, {
-
-    method:"POST",
-
-    headers:{
-      "Authorization":
-      `Bearer ${localStorage.getItem('token')}`
-    },
-
-    body:formData
-
-  });
-
-
-  const uploadResult = await uploadResponse.json();
-
-
-  if(!uploadResponse.ok){
-    throw new Error(uploadResult.error);
-  }
-
-
-  images = uploadResult.images;
-
-}
+});
 
     // Close modal on background click
     document.getElementById('blogModal').addEventListener('click', (e) => {

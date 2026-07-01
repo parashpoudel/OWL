@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - OWL Community</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <style>
     body { background: #0d0b09; }
     .admin-container {
@@ -182,6 +182,9 @@
       border-radius: 2px;
       margin-left: 8px;
     }
+    .admin-right {
+      position: relative;
+    }
     #mainNav {
       position: fixed;
       top: 0;
@@ -244,8 +247,14 @@
     }
 
     @media (max-width: 860px) {
-      .admin-grid {
+      .admin-layout {
         grid-template-columns: 1fr;
+      }
+      .admin-right {
+        order: 2;
+      }
+      .admin-left {
+        order: 1;
       }
       .admin-container {
         padding-top: 140px;
@@ -284,8 +293,9 @@
   <nav id="mainNav">
     <a href="/" class="nav-logo">OWL</a>
     <ul class="nav-links">
+      <li><a href="/">Home</a></li>
       <li><a href="/blogs">Blogs</a></li>
-      <li><a href="/admin">Admin</a></li>
+      <li><a href="/past-conquests">Past Conquests</a></li>
     </ul>
     <button class="nav-cta" id="logoutBtn">Logout</button>
   </nav>
@@ -295,89 +305,124 @@
       <h1>Admin Panel</h1>
     </div>
 
-    <div class="admin-grid">
-      <!-- Dashboard Summary Section -->
-      <div class="admin-section">
-        <h2>Dashboard</h2>
-        <div class="message success" id="dashboardSummary" style="display:block; padding: 18px; margin-bottom: 24px;">
-          Loading dashboard...
+    <div class="admin-layout" style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+      <div class="admin-left">
+        <div class="admin-grid">
+          <!-- Dashboard Summary Section -->
+          <div class="admin-section">
+            <h2>Dashboard</h2>
+            <div class="message success" id="dashboardSummary" style="display:block; padding: 18px; margin-bottom: 24px;">
+              Loading dashboard...
+            </div>
+            <div class="dashboard-stats" id="dashboardStats" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+              <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="color: var(--snow); margin-bottom: 10px;">Members</h3>
+                <p id="memberCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
+              </div>
+              <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="color: var(--snow); margin-bottom: 10px;">Recent Posts</h3>
+                <p id="postCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Create User Section -->
+          <div class="admin-section">
+            <h2>Create User Account</h2>
+            <div class="message" id="createMsg"></div>
+            <form id="createUserForm">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="username" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="user@example.com" required>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <select id="isAdmin">
+                  <option value="false">User</option>
+                  <option value="true">Admin</option>
+                </select>
+              </div>
+              <button type="submit" class="create-btn">Create Account</button>
+            </form>
+          </div>
         </div>
-        <div class="dashboard-stats" id="dashboardStats" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
-          <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
-            <h3 style="color: var(--snow); margin-bottom: 10px;">Members</h3>
-            <p id="memberCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
-          </div>
-          <div class="stat-card" style="background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
-            <h3 style="color: var(--snow); margin-bottom: 10px;">Recent Posts</h3>
-            <p id="postCount" style="font-size: 36px; color: var(--gold); margin:0;">0</p>
-          </div>
+
+        <div class="admin-section" style="margin-top: 40px;">
+          <h2>Community Members</h2>
+          <div class="users-list" id="usersList"></div>
+        </div>
+
+        <div class="admin-section" style="margin-top: 40px;">
+          <h2>Recent Community Posts</h2>
+          <div class="message" id="postMsg"></div>
+          <div class="users-list" id="recentPostsList"></div>
         </div>
       </div>
 
-      <!-- Create User Section -->
-      <div class="admin-section">
-        <h2>Create User Account</h2>
-        <div class="message" id="createMsg"></div>
-        <form id="createUserForm">
-          <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="username" placeholder="username" required>
+      <aside class="admin-right">
+          <div class="admin-section">
+            <h2>Account</h2>
+            <div style="display:flex;gap:12px;flex-direction:column;">
+              <button id="openChangePasswordBtn" class="create-btn">Change Password</button>
+              <a href="/" class="nav-cta" style="text-align:center;">Back to Home</a>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" placeholder="user@example.com" required>
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="password" placeholder="••••••••" required>
-          </div>
-          <div class="form-group">
-            <label>Role</label>
-            <select id="isAdmin">
-              <option value="false">User</option>
-              <option value="true">Admin</option>
-            </select>
-          </div>
-          <button type="submit" class="create-btn">Create Account</button>
-        </form>
-      </div>
-    </div>
 
-    <div class="admin-section" style="margin-top: 40px;">
-      <h2>Change Password</h2>
-      <div class="message" id="passwordMsg"></div>
-      <form id="changePasswordForm">
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" id="currentPassword" placeholder="••••••••" required>
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="newPassword" placeholder="••••••••" required>
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="confirmPassword" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="create-btn">Update Password</button>
-      </form>
-    </div>
+          <!-- Password modal -->
+          <div id="passwordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;align-items:center;justify-content:center;">
+            <div style="background:var(--stone);border:1px solid rgba(196,98,26,0.2);padding:28px;border-radius:10px;max-width:420px;margin:40px;">
+              <button style="float:right;background:none;border:none;color:var(--ember);font-size:20px;cursor:pointer;" id="closePasswordModal">✕</button>
+              <h3 style="margin-top:6px;font-family:'Bebas Neue',sans-serif;color:var(--snow);">Change Password</h3>
+              <div class="message" id="passwordModalMsg" style="display:none;margin-bottom:12px"></div>
+              <form id="passwordModalForm">
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <input type="password" id="pw_current" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                  <label>New Password</label>
+                  <input type="password" id="pw_new" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                  <label>Confirm New Password</label>
+                  <input type="password" id="pw_confirm" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="create-btn">Update Password</button>
+              </form>
+            </div>
+          </div>
 
-    <div class="admin-section" style="margin-top: 40px;">
-      <h2>Community Members</h2>
-      <div class="users-list" id="usersList"></div>
+        <div class="admin-section" style="margin-top: 24px;">
+          <h2>Past Conquests</h2>
+          <div class="message" id="conquestMsg"></div>
+          <form id="conquestForm">
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="conquestTitle" placeholder="Conquest title" required>
+            </div>
+            <div class="form-group">
+              <label>Images</label>
+              <input type="file" id="conquestImages" multiple accept="image/*">
+            </div>
+            <button type="submit" class="create-btn">Upload Conquest</button>
+          </form>
+          <div id="conquestList" class="users-list" style="margin-top:16px"></div>
+        </div>
+      </aside>
     </div>
-
-    <div class="admin-section" style="margin-top: 40px;">
-      <h2>Recent Community Posts</h2>
-      <div class="message" id="postMsg"></div>
-      <div class="users-list" id="recentPostsList"></div>
-    </div>
-  </div>
 
   <script>
     const API_URL = `${window.location.protocol}//${window.location.host}/api`;
     let currentUser = null;
+    const pendingDeletes = {};
 
     // Check admin authentication
     window.addEventListener('load', () => {
@@ -395,25 +440,47 @@
         return;
       }
 
-      document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+      // Change password modal handlers
+      const openBtn = document.getElementById('openChangePasswordBtn');
+      const modal = document.getElementById('passwordModal');
+      const closeModalBtn = document.getElementById('closePasswordModal');
+      const modalMsg = document.getElementById('passwordModalMsg');
 
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const msgEl = document.getElementById('passwordMsg');
+      openBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+      });
+
+      closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        modalMsg.style.display = 'none';
+        document.getElementById('passwordModalForm').reset();
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          modalMsg.style.display = 'none';
+          document.getElementById('passwordModalForm').reset();
+        }
+      });
+
+      document.getElementById('passwordModalForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('pw_current').value;
+        const newPassword = document.getElementById('pw_new').value;
+        const confirmPassword = document.getElementById('pw_confirm').value;
 
         if (newPassword.length < 6) {
-          msgEl.textContent = '✗ New password must be at least 6 characters long';
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsg.textContent = '✗ New password must be at least 6 characters long';
+          modalMsg.className = 'message error';
+          modalMsg.style.display = 'block';
           return;
         }
-
         if (newPassword !== confirmPassword) {
-          msgEl.textContent = '✗ New passwords do not match';
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsg.textContent = '✗ New passwords do not match';
+          modalMsg.className = 'message error';
+          modalMsg.style.display = 'block';
           return;
         }
 
@@ -428,19 +495,17 @@
           });
 
           const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || 'Failed to update password');
 
-          if (!response.ok) {
-            throw new Error(data.error || 'Failed to update password');
-          }
-
-          msgEl.textContent = `✓ ${data.message}`;
-          msgEl.className = 'message success';
-          msgEl.style.display = 'block';
-          document.getElementById('changePasswordForm').reset();
-        } catch (error) {
-          msgEl.textContent = `✗ ${error.message}`;
-          msgEl.className = 'message error';
-          msgEl.style.display = 'block';
+          modalMsg.textContent = `✓ ${data.message}`;
+          modalMsg.className = 'message success';
+          modalMsg.style.display = 'block';
+          document.getElementById('passwordModalForm').reset();
+          setTimeout(()=>{ modal.style.display = 'none'; modalMsg.style.display='none'; }, 1400);
+        } catch (err) {
+          modalMsg.textContent = `✗ ${err.message}`;
+          modalMsg.className = 'message error';
+          modalMsg.style.display = 'block';
         }
       });
 
@@ -602,6 +667,167 @@
         msgEl.style.display = 'block';
       }
     }
+
+    // Conquests: upload and list
+    async function loadConquests() {
+      try {
+        const res = await fetch(`${API_URL}/conquests`);
+        const data = await res.json();
+        const el = document.getElementById('conquestList');
+        if (!data.success || !data.conquests.length) {
+          el.innerHTML = '<p style="color:var(--fog)">No conquests yet.</p>';
+          return;
+        }
+        el.innerHTML = data.conquests.map(c => `
+          <div class="user-item">
+            <div class="user-info">
+              <h4><a href="/conquest/${c._id}">${c.title}</a></h4>
+              <p>${new Date(c.createdAt).toLocaleDateString()} · ${c.count} photo(s)</p>
+            </div>
+            <div class="action-row">
+              <button class="delete-btn" onclick="deleteConquest('${c._id}')">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.getElementById('conquestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('conquestTitle').value;
+      const files = document.getElementById('conquestImages').files;
+      const msgEl = document.getElementById('conquestMsg');
+
+      if (!title) {
+        msgEl.textContent = 'Title is required';
+        msgEl.className = 'message error';
+        msgEl.style.display = 'block';
+        return;
+      }
+
+      const form = new FormData();
+      form.append('title', title);
+      for (let i = 0; i < files.length; i++) form.append('images', files[i]);
+
+      try {
+        const response = await fetch(`${API_URL}/conquests`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+          body: form
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Upload failed');
+
+        msgEl.textContent = '✓ Conquest uploaded';
+        msgEl.className = 'message success';
+        msgEl.style.display = 'block';
+        document.getElementById('conquestForm').reset();
+        loadConquests();
+        setTimeout(()=>{ msgEl.style.display = 'none'; }, 3000);
+      } catch (err) {
+        msgEl.textContent = `✗ ${err.message}`;
+        msgEl.className = 'message error';
+        msgEl.style.display = 'block';
+      }
+    });
+
+    async function deleteConquest(id) {
+      // optimistic delete with undo
+      const itemEl = document.querySelector(`[data-conquest-id="${id}"]`);
+      let backupHTML = null;
+      if (itemEl) {
+        backupHTML = itemEl.outerHTML;
+        itemEl.remove();
+      }
+
+      const snackbar = ensureUndoSnackbar();
+      const undoKey = id + '_' + Date.now();
+      snackbar.show(`Conquest deleted`, 'Undo', 8000, async () => {
+        // Undo clicked
+        if (pendingDeletes[undoKey]) {
+          clearTimeout(pendingDeletes[undoKey].timer);
+          // re-insert backup
+          const list = document.getElementById('conquestList');
+          if (backupHTML) list.insertAdjacentHTML('afterbegin', backupHTML);
+          delete pendingDeletes[undoKey];
+        }
+      });
+
+      // schedule server delete
+      const t = setTimeout(async () => {
+        try {
+          const res = await fetch(`${API_URL}/conquests/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          });
+          if (!res.ok) throw new Error('Failed to delete');
+          // finished
+          delete pendingDeletes[undoKey];
+        } catch (err) {
+          alert('Delete failed: ' + (err.message || 'Error'));
+          // restore UI on failure
+          const list = document.getElementById('conquestList');
+          if (backupHTML) list.insertAdjacentHTML('afterbegin', backupHTML);
+        }
+      }, 8000);
+
+      pendingDeletes[undoKey] = { timer: t, id, backupHTML };
+    }
+
+    // Undo snackbar helper
+    function ensureUndoSnackbar() {
+      let sn = document.getElementById('undoSnackbar');
+      if (sn) return sn.__api;
+      sn = document.createElement('div');
+      sn.id = 'undoSnackbar';
+      sn.style.position = 'fixed';
+      sn.style.bottom = '24px';
+      sn.style.left = '50%';
+      sn.style.transform = 'translateX(-50%)';
+      sn.style.zIndex = 1000;
+      document.body.appendChild(sn);
+
+      sn.__api = {
+        show(message, actionText, timeout, onAction) {
+          sn.innerHTML = '';
+          const card = document.createElement('div');
+          card.style.background = 'rgba(20,18,16,0.95)';
+          card.style.color = 'var(--snow)';
+          card.style.padding = '12px 16px';
+          card.style.border = '1px solid rgba(196,98,26,0.18)';
+          card.style.borderRadius = '8px';
+          card.style.display = 'flex';
+          card.style.gap = '12px';
+          card.style.alignItems = 'center';
+          const msg = document.createElement('div');
+          msg.textContent = message;
+          const btn = document.createElement('button');
+          btn.textContent = actionText || 'Undo';
+          btn.style.background = 'transparent';
+          btn.style.border = '1px solid rgba(196,98,26,0.18)';
+          btn.style.color = 'var(--ember)';
+          btn.style.padding = '8px 12px';
+          btn.style.borderRadius = '6px';
+          btn.style.cursor = 'pointer';
+          btn.addEventListener('click', () => { onAction && onAction(); clear(); });
+
+          card.appendChild(msg);
+          card.appendChild(btn);
+          sn.appendChild(card);
+
+          const clear = () => { sn.innerHTML = ''; };
+          setTimeout(() => { clear(); }, timeout || 5000);
+        }
+      };
+      return sn.__api;
+    }
+
+    // call loadConquests in initial load
+    window.addEventListener('load', () => {
+      if (currentUser && currentUser.isAdmin) loadConquests();
+    });
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
