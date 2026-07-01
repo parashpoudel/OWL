@@ -451,38 +451,7 @@
       </div>
     </div>
 
-    <div id="passwordCard" class="password-card" style="display:none;">
-      <h3>Account</h3>
-      <p>Manage your account settings.</p>
-      <div style="display:flex;gap:8px;margin-top:10px;">
-        <button id="openChangePasswordBtnBlog" class="submit-btn">Change Password</button>
-        <a href="/" class="nav-cta" style="align-self:center;">Back to Home</a>
-      </div>
-    </div>
-
-    <!-- Password modal for blog/user -->
-    <div id="passwordModalBlog" class="blog-modal" style="display:none;">
-      <div class="modal-content">
-        <button class="close-btn" id="closePasswordModalBlog">&times;</button>
-        <h2 class="modal-title">Change Password</h2>
-        <div class="message" id="passwordMessageModal" style="display:none;"></div>
-        <form id="passwordModalFormBlog">
-          <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" id="pw_current_blog" placeholder="••••••••" required>
-          </div>
-          <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="pw_new_blog" placeholder="••••••••" required>
-          </div>
-          <div class="form-group">
-            <label>Confirm New Password</label>
-            <input type="password" id="pw_confirm_blog" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="submit-btn">Update Password</button>
-        </form>
-      </div>
-    </div>
+    <!-- account UI removed -->
 
     <div class="blog-callout" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(212,174,93,0.18); padding: 24px; margin-bottom: 32px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
       <div>
@@ -551,7 +520,7 @@
         logoutBtn.style.display = 'inline-flex';
         newBlogBtn.style.display = 'inline-flex';
         publishNote.style.display = 'none';
-        document.getElementById('passwordCard').style.display = 'block';
+        const pwCard = document.getElementById('passwordCard'); if (pwCard) pwCard.style.display = 'block';
       } else {
         currentUser = null;
         userBadge.textContent = 'Guest';
@@ -559,7 +528,7 @@
         logoutBtn.style.display = 'none';
         newBlogBtn.style.display = 'none';
         publishNote.style.display = 'block';
-        document.getElementById('passwordCard').style.display = 'none';
+        const pwCard = document.getElementById('passwordCard'); if (pwCard) pwCard.style.display = 'none';
       }
 
       // Password modal (user)
